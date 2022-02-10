@@ -19,5 +19,5 @@ class OptimizerBase(ABC):
         self.ub = ub
 
     @abstractmethod
-    def fit(self):
+    def run(self):
         pass
