@@ -126,8 +126,8 @@ class F5(OptTestFunction):
     reference = 'https://www.sfu.ca/~ssurjano/egg.html'
 
     _ndim = 2
-    _lb = -5.12
-    _ub = 5.12
+    _lb = -512
+    _ub = 512
 
     @staticmethod
     def test_func(xx, *args, **kwargs):
