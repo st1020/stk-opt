@@ -1,7 +1,7 @@
 from numbers import Real
 from inspect import isclass
 from abc import ABC, abstractmethod
-from typing import Dict, List, Union, Sequence, Optional, Type
+from typing import Dict, Tuple, Union, Sequence, Optional, Type
 
 import numpy as np
 
@@ -14,6 +14,8 @@ class OptTestFunction(ABC):
     _ndim: Optional[int] = None
     _lb: Union[Real, Sequence[Real]]
     _ub: Union[Real, Sequence[Real]]
+    _global_minimum_value: Real
+    _global_minimum_position: Sequence[Union[Real, Sequence[Real]]]
 
     def __init__(self, ndim: int = None):
         if self._ndim is None:
@@ -30,17 +32,32 @@ class OptTestFunction(ABC):
     def test_func(xx, *args, **kwargs):
         pass
 
-    @property
-    def lb(self) -> List[Real]:
-        if isinstance(self._lb, list):
-            return self._lb
-        return [self._lb] * self.ndim
+    def _check_value(self, value, name: str) -> Tuple[Real, ...]:
+        if isinstance(value, Sequence):
+            return tuple(value)
+        elif isinstance(value, Real):
+            return tuple([value] * self.ndim)
+        else:
+            raise TypeError(f'{name} must be list or Real, not {type(value)}')
 
     @property
-    def ub(self) -> List[Real]:
-        if isinstance(self._ub, list):
-            return self._ub
-        return [self._ub] * self.ndim
+    def lb(self) -> Tuple[Real, ...]:
+        return self._check_value(self._lb, '_lb')
+
+    @property
+    def ub(self) -> Tuple[Real, ...]:
+        return self._check_value(self._ub, '_ub')
+
+    @property
+    def global_minimum_value(self) -> Real:
+        if isinstance(self._global_minimum_value, Real):
+            return self._global_minimum_value
+        else:
+            raise TypeError(f'_global_minimum_value must be list or Real, not {type(self._global_minimum_value)}')
+
+    @property
+    def global_minimum_position(self) -> Tuple[Tuple[Real, ...], ...]:
+        return tuple(map(lambda x: self._check_value(x, '_global_minimum_position'), self._global_minimum_position))
 
     def __call__(self, xx, *args, **kwargs):
         if self.ndim != len(xx):
@@ -56,8 +73,10 @@ class F1(OptTestFunction):
     description = 'Many Local Minima'
     reference = 'https://www.sfu.ca/~ssurjano/ackley.html'
 
-    _lb: int = -32.768
-    _ub: int = 32.768
+    _lb = -32.768
+    _ub = 32.768
+    _global_minimum_value = 0
+    _global_minimum_position = [0]
 
     @staticmethod
     def test_func(xx, a=20, b=0.2, c=2 * np.pi):
@@ -77,6 +96,8 @@ class F2(OptTestFunction):
     _ndim = 2
     _lb = [-15, -3]
     _ub = [-5, 3]
+    _global_minimum_value = 0
+    _global_minimum_position = [(-10, 1)]
 
     @staticmethod
     def test_func(xx, *args, **kwargs):
@@ -94,6 +115,8 @@ class F3(OptTestFunction):
     _ndim = 2
     _lb = -10
     _ub = 10
+    _global_minimum_value = -2.06261
+    _global_minimum_position = [(1.3491, -1.3491), (1.3491, 1.3491), (-1.3491, 1.3491), (-1.3491, -1.3491)]
 
     @staticmethod
     def test_func(xx, *args, **kwargs):
@@ -111,6 +134,8 @@ class F4(OptTestFunction):
     _ndim = 2
     _lb = -5.12
     _ub = 5.12
+    _global_minimum_value = -1
+    _global_minimum_position = [(0, 0)]
 
     @staticmethod
     def test_func(xx, *args, **kwargs):
@@ -128,6 +153,8 @@ class F5(OptTestFunction):
     _ndim = 2
     _lb = -512
     _ub = 512
+    _global_minimum_value = -959.6407
+    _global_minimum_position = [(512, 404.2319)]
 
     @staticmethod
     def test_func(xx, *args, **kwargs):
