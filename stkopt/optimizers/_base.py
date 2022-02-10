@@ -5,7 +5,7 @@ from typing import Callable, Sequence
 from ..test_functions import OptTestFunction
 
 
-class OptimizersBase(ABC):
+class OptimizerBase(ABC):
     def __init__(self, func: Callable, ndim: int = None, lb: Sequence[Real] = None, ub: Sequence[Real] = None):
         if ndim is None and isinstance(func, OptTestFunction):
             ndim = func.ndim
