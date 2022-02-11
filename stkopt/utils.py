@@ -32,7 +32,7 @@ def draw_test_func(func: Callable, ndim: int = None, lb: Sequence[Real] = None, 
         if step is None:
             step = (stop - start) / 1000
         x = np.arange(start, stop, step)
-        y = func([x])
+        y = func(np.array([x]))
         plt.plot(x, y)
         plt.show()
     elif ndim == 2:
@@ -46,7 +46,7 @@ def draw_test_func(func: Callable, ndim: int = None, lb: Sequence[Real] = None, 
         x = np.arange(start_x, stop_x, step)
         y = np.arange(start_y, stop_y, step)
         x, y = np.meshgrid(x, y)
-        z = func([x, y])
+        z = func(np.array([x, y]))
         axes.plot_surface(x, y, z, cmap='rainbow')
         plt.show()
     else:

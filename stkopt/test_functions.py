@@ -81,8 +81,8 @@ class F1(OptTestFunction):
     @staticmethod
     def test_func(xx, a=20, b=0.2, c=2 * np.pi):
         d = len(xx)
-        sum1 = sum(map(lambda t: t ** 2, xx))
-        sum2 = sum(map(lambda t: np.cos(c * t), xx))
+        sum1 = np.sum(xx ** 2, axis=0)
+        sum2 = np.sum(np.cos(c * xx), axis=0)
         term1 = -a * np.exp(-b * np.sqrt(sum1 / d))
         term2 = - np.exp(sum2 / d)
         return term1 + term2 + a + np.exp(1)
