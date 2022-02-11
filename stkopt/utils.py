@@ -1,3 +1,5 @@
+import time
+import functools
 from numbers import Real
 from typing import Callable, Sequence
 
@@ -51,3 +53,15 @@ def draw_test_func(func: Callable, ndim: int = None, lb: Sequence[Real] = None, 
         plt.show()
     else:
         raise ValueError(f'ndim must be 1 or 2, but {ndim} was given')
+
+
+def execution_time(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        func_result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f'time: {end_time - start_time}')
+        return func_result
+
+    return wrapper
